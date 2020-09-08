@@ -12,6 +12,7 @@ function App() {
     isSignedIn: false,
     name: '',
     email: '',
+    password: '',
     photo: ''
   })
 
@@ -51,6 +52,25 @@ function App() {
       console.log(error);
     })
   }
+  const handleSubmit = () => {
+
+  }
+  const handleBlur = (e) => {
+    let isFormValid = true;
+    if(e.target.name === 'email'){
+      isFormValid = /\S+@\S+\.\S+/.test(e.target.value);
+    }
+    if(e.target.name === 'password'){
+      const isPasswordValid = e.target.value.length >= 6;
+      const passwordHasNumber = /\d{1}/.test(e.target.value);
+      isFormValid = isPasswordValid && passwordHasNumber;
+    }
+    if(isFormValid){
+      const newUserInfo = {...user};
+      newUserInfo[e.target.name] = e.target.value;
+      setUser(newUserInfo);
+    }
+  }
   return (
     <div className="App">
       {
@@ -65,6 +85,19 @@ function App() {
           <img src={user.photo} alt=""/>
         </div>
       }
+      <h1> Our own Authentication</h1>
+      <p>Name: {user.name}</p>
+      <p>Email: {user.email}</p>
+      <p>Password: {user.password}</p>
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="name" id="" placeholder="Your Name" onBlur={handleBlur}/>
+        <br/>
+        <input type="text" name="email" onBlur={handleBlur} placeholder="Enter your email" required/>
+        <br/>
+        <input type="password" name="password" onBlur={handleBlur} placeholder="Password" required/>
+        <br/>
+        <input type="submit" value="Submit"/>
+      </form>
 
     </div>
   );
