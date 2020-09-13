@@ -41,22 +41,23 @@ function App() {
   }
 
   const handleFbLogin = () => {
-    firebase.auth().signInWithPopup(fbProvider).then(function(result) {
-      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-      var token = result.credential.accessToken;
-      // The signed-in user info.
-      var user = result.user;
-      // ...
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
-    });
+    firebase.auth().signInWithPopup(fbProvider)
+    .then(res => {
+      const {displayName, photoURL, email} = res.user;
+
+      const signedInUser = {
+        isSignedIn: true,
+        name: displayName,
+        email: email,
+        photo: photoURL
+      }
+
+      setUser(signedInUser);
+    })
+    .catch(error => {
+      console.log(error);
+      console.log(error.message);
+    })
   }
 
   const handleSignOut = () => {
@@ -152,7 +153,12 @@ function App() {
         :<button onClick={handleSignIn}>Sign in with Google</button>
       }
       <br/>
-      <button onClick={handleFbLogin}>Sign in with Facebook</button>
+      {
+        user.isSignedIn
+        ?<button onClick={handleSignOut}>Sign in with Facebook</button>
+        :<button onClick={handleFbLogin}>Sign in with Facebook</button>
+      }
+      
       {
         user.isSignedIn && <div>
           <h2>Welcome, {user.name}</h2>
